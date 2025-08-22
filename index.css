@@ -60,6 +60,24 @@ body { font-family: var(--primary-font); background: var(--background-color); co
 .report-kv-key { color: var(--label-color); text-align: left; }
 .report-kv-value { font-weight: 600; text-align: right; background-color: #f1f3f4; padding: 4px 8px; border-radius: 4px; }
 
+.sick-pay-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.auto-calc-label {
+  font-weight: normal;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--label-color);
+}
+
+
 /* Gauge */
 .margin-analysis-container { display: flex; flex-direction: column; }
 .margin-analysis-core { display: flex; align-items: center; gap: 20px; }

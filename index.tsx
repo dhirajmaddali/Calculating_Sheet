@@ -163,7 +163,7 @@ function recalc() {
 
   // INPUTS
   const billR = valNum("bill_regular", 0);      // Bill Rate
-  const billOT = valNum("bill_ot", 0);       // OT Bill Rate
+  const billOT = valNum("bill_ot", 0);          // Over Time Addition
   const payR = valNum("pay_regular", 0);        // W-2 hourly
   const hrsR = valNum("hrs_regular", 0);        // Standard hours/week (REG)
   const hrsOT = valNum("hrs_ot", 0);            // Regular OT hours per week
@@ -182,7 +182,7 @@ function recalc() {
 
   // Rate after fee
   const hrAfterFee = billR * (1 - fee);
-  const otHrAfterFee = billOT * (1 - fee);
+  const otHrAfterFee = (billR + billOT) * (1 - fee);
 
   // Hourly stipend components
   const ND = houseDaily + mealsDaily;       // daily non-tax
@@ -191,14 +191,13 @@ function recalc() {
   const HA_hourly = hrsR > 40 ? (houseDaily * 7 / 40) : (hrsR > 0 ? (houseDaily * 7 / hrsR) : 0);
   const MI_hourly = hrsR > 40 ? (mealsDaily * 7 / 40) : (hrsR > 0 ? (mealsDaily * 7 / hrsR) : 0);
 
-  // Contract hours
-  const contractRegularHours = hrsR * weeks;
+  // Contract hours (per reference sheet logic)
+  const contractRegularHours = scheduleDays * weeks * 8;
   const contractOTHours = hrsOT * weeks;
-  const totalContractHours = contractRegularHours + contractOTHours;
 
   // Sick Pay Hours (auto if checkbox not present OR checked)
   const sickBox = el("auto_sick_calc") as HTMLInputElement;
-  const autoSickHours = totalContractHours / 30; // Per formula: (Regular + OT) / 30
+  const autoSickHours = contractRegularHours / 30; // Per formula: Regular Hours / 30
   if (!sickBox || (sickBox && sickBox.checked)) setValue("sick_hours", autoSickHours > 0 ? autoSickHours.toFixed(2) : '');
   const sickHours = valNum("sick_hours", autoSickHours);
 
