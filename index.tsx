@@ -229,14 +229,11 @@ function recalc() {
     ? (((hrsR - (OT_if_above_8h * scheduleDays)) * payR) + ((OT_if_above_8h * scheduleDays) * OT_rate_if_above_40))
     : (hrsR * payR);
 
-  // Total weekly taxable, including standard OT
-  const totalWeeklyTaxableWithOT = weeklyOnW2Taxable + (hrsOT * PT_OVERTIME);
-
   // Weekly Stipend (Non-Taxable) - per formula
-  const weeklyStipendNT = hrsR > 40 ? (hrsR * NW / 40) : NW;
+  const weeklyStipendNT_prorated = hrsR > 40 ? (hrsR * NW / 40) : NW;
 
   // Weekly Gross (per formula, does not include hrsOT pay)
-  const weeklyGross = weeklyOnW2Taxable + weeklyStipendNT;
+  const weeklyGross = weeklyOnW2Taxable + weeklyStipendNT_prorated;
 
   // Client billing (uses after-fee rates)
   const weeklyBillingClient = (hrsR * hrAfterFee) + (hrsOT * otHrAfterFee);
@@ -266,21 +263,24 @@ function recalc() {
   // Auto-set OT pay (display next to W-2 input if present)
   setValue("pay_ot", (payR > 0) ? (PT_OVERTIME).toFixed(2) : '');
 
-  // Nurse package
+  // Nurse package (uses simple, non-prorated values per reference sheet)
+  const npWeeklyTaxable = payR * hrsR;
+  const npWeeklyNonTaxable = NW;
   setText("np_tax_hourly", fmtUSD(payR));
   setText("np_tax_daily", fmtUSD(payR * dailyRegularHours));
-  setText("np_tax_weekly", fmtUSD(totalWeeklyTaxableWithOT)); // Full taxable pay
-  setText("np_tax_monthly", fmtUSD(totalWeeklyTaxableWithOT * WEEKS_IN_MONTH));
+  setText("np_tax_weekly", fmtUSD(npWeeklyTaxable));
+  setText("np_tax_monthly", fmtUSD(npWeeklyTaxable * WEEKS_IN_MONTH));
 
   setText("np_nt_hourly", fmtUSD(NH));
   setText("np_nt_daily", fmtUSD(ND));
-  setText("np_nt_weekly", fmtUSD(weeklyStipendNT));
-  setText("np_nt_monthly", fmtUSD(weeklyStipendNT * WEEKS_IN_MONTH));
+  setText("np_nt_weekly", fmtUSD(npWeeklyNonTaxable));
+  setText("np_nt_monthly", fmtUSD(npWeeklyNonTaxable * WEEKS_IN_MONTH));
 
+  const npTotalWeekly = npWeeklyTaxable + npWeeklyNonTaxable;
   setText("np_total_hourly", fmtUSD(payR + NH));
   setText("np_total_daily", fmtUSD((payR * dailyRegularHours) + ND));
-  setText("np_total_weekly", fmtUSD(totalWeeklyTaxableWithOT + weeklyStipendNT));
-  setText("np_total_monthly", fmtUSD((totalWeeklyTaxableWithOT + weeklyStipendNT) * WEEKS_IN_MONTH));
+  setText("np_total_weekly", fmtUSD(npTotalWeekly));
+  setText("np_total_monthly", fmtUSD(npTotalWeekly * WEEKS_IN_MONTH));
 
   // Gross margins & billing
   setText("gm_hourly", fmtUSD(hourlyMargin));
@@ -297,10 +297,10 @@ function recalc() {
   setText("pkg_w2_ot", fmtUSD(PT_OVERTIME));
   setText("pkg_stipend_hourly", fmtUSD(NH));
   setText("pkg_ot_special", fmtUSD(OT_rate_if_above_40));
-  // Weekly Breakdown per formula sheet (ignores hrsOT)
+  // Weekly Breakdown per formula sheet (uses complex/prorated values)
   setText("pkg_weekly_gross", fmtUSD(weeklyGross));
   setText("pkg_weekly_w2", fmtUSD(weeklyOnW2Taxable));
-  setText("pkg_weekly_stipend", fmtUSD(weeklyStipendNT));
+  setText("pkg_weekly_stipend", fmtUSD(weeklyStipendNT_prorated));
 
   // Orientation
   setText("orient_total", fmtUSD(totalOrientationPay));
