@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SimpliFI Rate Calculator</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 id="title">Rate Calculator</h1>
+      <div class="header-actions">
+        <div class="client-selector">
+          <label for="client">Client:</label>
+          <select id="client"></select>
+          <div id="fee" class="fee-display">Fee: —</div>
+        </div>
+        <button id="reset" class="reset-button" title="Reset">↻</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="calculator-container">
+        <div class="calculator-grid">
+          <div class="grid-label"></div>
+          <div class="grid-header">Regular</div>
+          <div class="grid-header">OT</div>
+
+          <h2 class="section-title">Billing to client</h2>
+          <div class="grid-label">Bill Rate</div>
+          <input class="input-cell" type="number" id="bill_regular" placeholder="0.00">
+          <input class="input-cell" type="number" id="bill_ot" placeholder="0.00">
+
+          <div class="grid-label">Rate After Fee</div>
+          <div class="display-cell" id="afterfee_regular">$0.00</div>
+          <div class="display-cell" id="afterfee_ot">$0.00</div>
+
+          <h2 class="section-title">Pay to Candidate</h2>
+          <div class="grid-label">W2 Pay Rate</div>
+          <input class="input-cell" type="number" id="pay_regular" placeholder="0.00">
+          <input class="input-cell" type="number" id="pay_ot" placeholder="0.00">
+
+          <h2 class="section-title">Hours</h2>
+          <div class="grid-label">Weekly Hours</div>
+          <input class="input-cell" type="number" id="hrs_regular" placeholder="0">
+          <input class="input-cell" type="number" id="hrs_ot" placeholder="0">
+
+          <div class="grid-label">Contract Length (weeks)</div>
+          <input class="input-cell" type="number" id="contract_len" placeholder="0">
+          <div class="grid-cell"></div>
+
+          <div class="grid-label">Schedule days in a week</div>
+          <input class="input-cell" type="number" id="schedule_days" placeholder="5">
+          <div class="grid-cell"></div>
+
+          <h2 class="section-title">General</h2>
+          <div class="grid-label">Housing Allowance (Daily)</div>
+          <input class="input-cell" type="number" id="house_daily" placeholder="0.00">
+          <div class="grid-cell"></div>
+
+          <div class="grid-label">Meals & Incidentals (Daily)</div>
+          <input class="input-cell" type="number" id="meals_daily" placeholder="0.00">
+          <div class="grid-cell"></div>
+
+          <h2 class="section-title">Orientation</h2>
+          <div class="grid-label">Orientation Type</div>
+          <select class="input-cell" id="orient_type">
+            <option>Billable</option>
+            <option>Non Billable</option>
+          </select>
+          <div class="grid-cell"></div>
+
+          <div class="grid-label">Hours per contract</div>
+          <input class="input-cell" type="number" id="orient_hours" placeholder="0">
+          <div class="grid-cell"></div>
+
+          <div class="grid-label">Non-Billable Pay Rate Per Hour</div>
+          <input class="input-cell" type="number" id="orient_pay" placeholder="0.00">
+          <div class="grid-cell"></div>
+
+          <div class="grid-label">Total Orientation Pay</div>
+          <div class="display-cell" id="orient_total">$0.00</div>
+          <div class="grid-cell"></div>
+
+          <h2 class="section-title">Additional Pay</h2>
+          <div class="grid-label">Assignment Start Bonus</div>
+          <input class="input-cell" type="number" id="bonus_start" placeholder="0.00">
+          <div class="display-cell" id="hourly_start">$0.00</div>
+
+          <div class="grid-label">Assignment Completion Bonus</div>
+          <input class="input-cell" type="number" id="bonus_complete" placeholder="0.00">
+          <div class="display-cell" id="hourly_complete">$0.00</div>
+
+          <div class="grid-label">BCG Reimbursement</div>
+          <input class="input-cell" type="number" id="bcg_reimb" placeholder="0.00">
+          <div class="display-cell" id="hourly_bcg">$0.00</div>
+
+          <div class="grid-label" style="display: flex; justify-content: space-between; align-items: center;">
+            Sick Pay Hours
+            <label for="auto_sick_calc" style="font-weight: normal; font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              Auto
+              <input type="checkbox" id="auto_sick_calc">
+            </label>
+          </div>
+          <input class="input-cell" type="number" id="sick_hours" placeholder="0">
+          <div class="display-cell" id="hourly_sick">$0.00</div>
+        </div>
+      </section>
+
+      <section class="report-container">
+        <section class="report-section">
+          <h3 class="report-section-title">NURSE PACKAGE</h3>
+          <div class="nurse-package-grid">
+            <div></div>
+            <div class="nurse-package-header">Hourly</div>
+            <div class="nurse-package-header">Daily</div>
+            <div class="nurse-package-header">Weekly</div>
+            <div class="nurse-package-header">Monthly</div>
+
+            <div class="nurse-package-label">W-2 Taxable</div>
+            <div id="np_tax_hourly">No data</div>
+            <div id="np_tax_daily">No data</div>
+            <div id="np_tax_weekly">No data</div>
+            <div id="np_tax_monthly">No data</div>
+
+            <div class="nurse-package-label">Non-Taxable Travel</div>
+            <div id="np_nt_hourly">No data</div>
+            <div id="np_nt_daily">No data</div>
+            <div id="np_nt_weekly">No data</div>
+            <div id="np_nt_monthly">No data</div>
+
+            <div class="nurse-package-label total-row">Total</div>
+            <div class="total-row" id="np_total_hourly">No data</div>
+            <div class="total-row" id="np_total_daily">No data</div>
+            <div class="total-row" id="np_total_weekly">No data</div>
+            <div class="total-row" id="np_total_monthly">No data</div>
+          </div>
+        </section>
+
+        <div class="report-bottom-grid">
+          <section class="report-section">
+            <h3 class="report-section-title">GROSS MARGINS</h3>
+            <div class="report-kv-grid">
+              <div class="report-kv-key">Hourly Margin</div><div class="report-kv-value" id="gm_hourly">No data</div>
+              <div class="report-kv-key">Weekly Net</div><div class="report-kv-value" id="gm_weekly">No data</div>
+              <div class="report-kv-key">Monthly Net</div><div class="report-kv-value" id="gm_monthly">No data</div>
+              <div class="report-kv-key">Contract Net</div><div class="report-kv-value" id="gm_contract">No data</div>
+              <div class="report-kv-key">Weekly billing to client</div><div class="report-kv-value" id="bill_weekly">No data</div>
+              <div class="report-kv-key">Monthly billing to client</div><div class="report-kv-value" id="bill_monthly">No data</div>
+              <div class="report-kv-key">Total contract billing to client</div><div class="report-kv-value" id="bill_contract">No data</div>
+            </div>
+          </section>
+
+          <section class="report-section">
+            <h3 class="report-section-title">PACKAGE OFFERED TO NURSE</h3>
+            <h4 class="report-subsection-title">Hourly Breakdown</h4>
+            <div class="report-kv-grid">
+              <div class="report-kv-key">Total Hourly Pay Rate</div><div class="report-kv-value" id="pkg_total_hourly">No data</div>
+              <div class="report-kv-key">On W2(Taxable)</div><div class="report-kv-value" id="pkg_w2">No data</div>
+              <div class="report-kv-key">On W2(Taxable) OT</div><div class="report-kv-value" id="pkg_w2_ot">No data</div>
+              <div class="report-kv-key">Stipend(Non-Taxable)</div><div class="report-kv-value" id="pkg_stipend_hourly">No data</div>
+              <div class="report-kv-key">Special OT Rate if Standard hours between 40 to 48</div><div class="report-kv-value" id="pkg_ot_special">No data</div>
+            </div> &nbsp;
+
+            <h4 class="report-subsection-title">Weekly Breakdown</h4>
+            <div class="report-kv-grid">
+              <div class="report-kv-key">Weekly Gross</div><div class="report-kv-value" id="pkg_weekly_gross">No data</div>
+              <div class="report-kv-key">On W2(Taxable)</div><div class="report-kv-value" id="pkg_weekly_w2">No data</div>
+              <div class="report-kv-key">Stipend (Non-Taxable)</div><div class="report-kv-value" id="pkg_weekly_stipend">No data</div>
+            </div>
+          </section>
+        </div>
+
+        <section class="report-section margin-analysis-container">
+          <h3 class="report-section-title">Hourly Margin Analysis</h3>
+          <div class="margin-analysis-core">
+            <div class="margin-gauge" aria-hidden="true">
+              <svg width="160" height="160" viewBox="0 0 160 160" class="margin-gauge-svg">
+                <circle class="gauge-background" cx="80" cy="80" r="60" stroke-width="20"></circle>
+                <circle id="gaugeArc" class="gauge-progress" cx="80" cy="80" r="60" stroke-width="20"
+                        transform="rotate(-90 80 80)" />
+              </svg>
+              <div class="margin-gauge-content">
+                <span class="margin-gauge-value" id="gaugeValue">$0.00</span>
+                <span class="margin-gauge-label">Effective Hourly Margin</span>
+              </div>
+            </div>
+            <p id="ma_message" class="margin-analysis-message">Enter numbers to analyze margin.</p>
+          </div>
+          <div class="margin-analysis-suggestions" id="ma_suggestions"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="index.tsx"></script>
+</body>
+</html>
